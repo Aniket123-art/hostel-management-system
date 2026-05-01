@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style..css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo">HMS</div>
+                <div>
+                    <p>Hostel</p>
+                    <span>Management</span>
+                </div>
+            </div>
+            <nav>
+                <button type="button" data-page="dashboard" class="active">Dashboard</button>
+                <button type="button" data-page="students">Students</button>
+                <button type="button" data-page="rooms">Rooms</button>
+                <button type="button" data-page="fees">Fees</button>
+                <button type="button" data-page="docs">Documents</button>
+            </nav>
+            <div class="sidebar-footer">
+                <span>Quick summary</span>
+                <div class="footer-stat"><strong id="totalStudentsMini">0</strong> students</div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header class="topbar">
+                <div>
+                    <h1>Hostel Management Dashboard</h1>
+                    <p>Manage students, rooms, fees and documents with a modern control panel.</p>
+                </div>
+                <div class="topbar-actions">
+                    <div class="search-wrap">
+                        <input type="search" id="globalSearch" placeholder="Search students..." oninput="searchStudent()">
+                    </div>
+                    <button id="themeToggle" type="button">Dark mode</button>
+                </div>
+            </header>
+
+            <section id="dashboard" class="page active">
+                <div class="section-header">
+                    <div>
+                        <h2>Dashboard</h2>
+                        <p>Live metrics and quick actions for your hostel operations.</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="button" onclick="showPage('students')">Add Student</button>
+                        <button type="button" onclick="showPage('rooms')">Allocate Room</button>
+                    </div>
+                </div>
+
+                <div class="cards">
+                    <article class="card gradient card-primary">
+                        <div>
+                            <span>Total students</span>
+                            <strong id="totalStudents">0</strong>
+                        </div>
+                        <div class="badge">Live</div>
+                    </article>
+                    <article class="card gradient card-secondary">
+                        <div>
+                            <span>Rooms allocated</span>
+                            <strong id="roomsUsed">0</strong>
+                        </div>
+                        <div class="badge">Capacity</div>
+                    </article>
+                    <article class="card gradient card-accent">
+                        <div>
+                            <span>Pending fees</span>
+                            <strong id="pendingFees">0</strong>
+                        </div>
+                        <div class="badge">Attention</div>
+                    </article>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="panel">
+                        <h3>Recent activity</h3>
+                        <ul id="recentActivity" class="activity-list"></ul>
+                    </div>
+                    <div class="panel highlight-panel">
+                        <h3>Fee breakdown</h3>
+                        <div class="stats-row">
+                            <div>
+                                <span>Paid</span>
+                                <strong id="totalPaid">0</strong>
+                            </div>
+                            <div>
+                                <span>Due</span>
+                                <strong id="totalDue">0</strong>
+                            </div>
+                        </div>
+                        <div class="progress">
+                            <div id="feeProgress" class="progress-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="students" class="page">
+                <div class="section-header">
+                    <div>
+                        <h2>Students</h2>
+                        <p>Add new students, search and manage records.</p>
+                    </div>
+                    <button type="button" onclick="showPage('dashboard')">Back to dashboard</button>
+                </div>
+
+                <form id="studentForm" class="card form-card">
+                    <div class="form-grid">
+                        <input type="text" id="name" placeholder="Student Name" required>
+                        <input type="text" id="roll" placeholder="Roll No" required>
+                        <input type="text" id="course" placeholder="Course" required>
+                    </div>
+                    <button type="submit" class="primary">Add student</button>
+                </form>
+
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <input type="text" id="search" placeholder="Search students..." oninput="searchStudent()">
+                    </div>
+                    <div class="toolbar-right">
+                        <button type="button" onclick="sortStudents('name')">Sort by name</button>
+                        <button type="button" onclick="sortStudents('roll')">Sort by roll</button>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Roll</th><th>Course</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="studentTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="rooms" class="page">
+                <div class="section-header">
+                    <div>
+                        <h2>Rooms</h2>
+                        <p>Allocate rooms and keep occupancy updated.</p>
+                    </div>
+                    <button type="button" onclick="showPage('dashboard')">Back to dashboard</button>
+                </div>
+
+                <form id="roomForm" class="card form-card">
+                    <div class="form-grid">
+                        <input type="text" id="studentRoom" placeholder="Student Name" required>
+                        <input type="text" id="roomNo" placeholder="Room No" required>
+                    </div>
+                    <button type="submit" class="primary">Allocate room</button>
+                </form>
+
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr><th>Student</th><th>Room</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="roomTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="fees" class="page">
+                <div class="section-header">
+                    <div>
+                        <h2>Fees</h2>
+                        <p>Track payments, remaining balances and status.</p>
+                    </div>
+                    <button type="button" onclick="showPage('dashboard')">Back to dashboard</button>
+                </div>
+
+                <form id="feeForm" class="card form-card">
+                    <div class="form-grid">
+                        <input type="text" id="feeName" placeholder="Student Name" required>
+                        <input type="number" id="totalFee" placeholder="Total Fee" required>
+                        <input type="number" id="paidFee" placeholder="Paid Fee" required>
+                    </div>
+                    <button type="submit" class="primary">Add fee record</button>
+                </form>
+
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Total</th><th>Paid</th><th>Remaining</th><th>Status</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="feeTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="docs" class="page">
+                <div class="section-header">
+                    <div>
+                        <h2>Documents</h2>
+                        <p>Upload and manage student documents with ease.</p>
+                    </div>
+                    <button type="button" onclick="showPage('dashboard')">Back to dashboard</button>
+                </div>
+
+                <div class="card form-card docs-card">
+                    <input type="file" id="docUpload">
+                    <button type="button" onclick="uploadDoc()" class="primary">Upload document</button>
+                </div>
+
+                <div class="table-card">
+                    <ul id="docList" class="doc-list"></ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
